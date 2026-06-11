@@ -98,6 +98,146 @@
     font-size:16px;letter-spacing:.02em}
   .next-card .in{color:var(--gold);font-family:var(--disp);font-weight:600}
 
+  /* ---------- live panel: stats + timeline ---------- */
+  .live-clock{font-family:var(--disp);font-weight:600}
+  /* ESPN-style horizontal score card */
+  .sc-comp{font-size:10.5px;color:var(--ink-dim);letter-spacing:.06em;
+    text-transform:uppercase;text-align:center;margin-bottom:12px}
+  .scorecard{display:grid;grid-template-columns:1fr auto 1fr;align-items:start;gap:6px}
+  .sc-side{display:flex;flex-direction:column;align-items:center;gap:7px;min-width:0}
+  .sc-side img,.sc-side .flag-fallback{width:46px;height:46px;border-radius:6px}
+  .sc-name{font-family:var(--disp);font-weight:600;font-size:15px;letter-spacing:.02em;
+    text-align:center;line-height:1.15}
+  .sc-mid{display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:0 6px;min-width:88px}
+  .sc-score{font-family:var(--disp);font-weight:700;font-size:38px;line-height:1;
+    letter-spacing:.01em;font-variant-numeric:tabular-nums;display:flex;align-items:baseline;gap:8px}
+  .sc-dash{color:var(--ink-dim);font-size:24px;font-weight:400}
+  .sc-clock{font-family:var(--disp);font-size:13px;font-weight:600;margin-top:7px;color:var(--ink-dim)}
+  .sc-clock.live{color:var(--live);display:flex;align-items:center;gap:5px}
+  .sc-clock.live::before{content:"";width:6px;height:6px;border-radius:50%;
+    background:var(--live);animation:pulse 1.4s ease-in-out infinite}
+  .sc-clock.delayed{color:var(--gold)}
+  /* sticky mini-scoreboard (appears once the full card scrolls away) */
+  .mini-bar{
+    position:sticky;top:0;z-index:18;
+    display:none;align-items:center;justify-content:space-between;gap:10px;
+    background:rgba(11,11,12,.94);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--card-edge);
+    padding:8px 16px;
+  }
+  .mini-bar.show{display:flex}
+  .mini-side{display:flex;align-items:center;gap:7px;flex:1;min-width:0}
+  .mini-side.a{justify-content:flex-end}
+  .mini-side img,.mini-side .flag-fallback{width:22px;height:22px;border-radius:3px}
+  .mini-abbr{font-family:var(--disp);font-weight:600;font-size:14px;letter-spacing:.04em}
+  .mini-mid{display:flex;flex-direction:column;align-items:center;gap:1px;flex:none}
+  .mini-score{font-family:var(--disp);font-weight:700;font-size:18px;
+    font-variant-numeric:tabular-nums;line-height:1}
+  .mini-clock{font-family:var(--disp);font-size:10.5px;font-weight:600;color:var(--ink-dim)}
+  .mini-clock.live{color:var(--live)}
+  .mini-clock.delayed{color:var(--gold)}
+  /* recent-form pips */
+  .form{display:flex;gap:3px;margin-top:1px}
+  .form .pip{width:6px;height:6px;border-radius:50%;background:var(--card-edge)}
+  .form .pip.w{background:var(--pitch)}
+  .form .pip.l{background:var(--live)}
+  .form .pip.d{background:var(--ink-dim)}
+  /* scorer / red-card summary line */
+  .summary-line{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 16px;
+    margin-top:14px;padding-top:12px;border-top:1px solid var(--card-edge);
+    font-size:12.5px;color:var(--ink)}
+  .summary-line .sl-item{font-family:var(--disp);font-weight:500;white-space:nowrap}
+  .summary-line .sl-min{color:var(--gold);font-size:11px}
+  .summary-line .card.sl{display:inline-block;width:8px;height:11px;border-radius:1px;vertical-align:-1px}
+  /* match leaders — value beside name, category centered */
+  .lead{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;
+    padding:11px 0;font-size:13.5px}
+  .lead + .lead{border-top:1px solid rgba(38,38,42,.55)}
+  .lead-cat{font-size:10px;color:var(--ink-dim);text-transform:uppercase;
+    letter-spacing:.07em;text-align:center;line-height:1.3;max-width:80px}
+  .lead-side{display:flex;align-items:center;gap:8px;min-width:0}
+  .lead-side.h{justify-content:flex-start}
+  .lead-side.a{justify-content:flex-end}
+  .lead-side .ln{font-family:var(--disp);font-weight:500;overflow:hidden;
+    text-overflow:ellipsis;white-space:nowrap;display:flex;align-items:center;gap:6px}
+  .lead-side .lv{font-family:var(--disp);font-weight:700;font-size:18px;color:var(--gold);
+    font-variant-numeric:tabular-nums;flex:none}
+  .lead-side .num{font-family:var(--disp);font-size:9.5px;color:var(--ink-dim);
+    border:1px solid var(--card-edge);border-radius:4px;padding:1px 4px;flex:none}
+  .panel{
+    background:var(--card);border:1px solid var(--card-edge);
+    border-radius:22px 10px 10px 10px;margin-bottom:14px;overflow:hidden;
+  }
+  .panel.live{border-color:var(--live)}
+  .panel-sec{padding:13px 14px;border-top:1px solid var(--card-edge)}
+  .panel-sec h3{
+    font-family:var(--disp);font-size:11px;font-weight:600;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--ink-dim);margin-bottom:11px;
+  }
+  /* stat rows */
+  .stat{margin-bottom:11px}
+  .stat:last-child{margin-bottom:0}
+  .stat .vals{
+    display:flex;justify-content:space-between;align-items:baseline;
+    font-family:var(--disp);font-size:14px;margin-bottom:4px;
+  }
+  .stat .lbl{font-family:var(--body);font-size:10.5px;color:var(--ink-dim);
+    text-transform:uppercase;letter-spacing:.06em}
+  .stat .bar{display:flex;height:5px;border-radius:3px;overflow:hidden;background:var(--card-edge)}
+  .stat .bar .h{background:var(--pitch)}
+  .stat .bar .a{background:var(--us);margin-left:auto}
+  /* horizontal timeline axis */
+  .tl-legend{display:flex;align-items:center;gap:10px;margin-bottom:10px;
+    font-size:11px;color:var(--ink-dim)}
+  .tl-team{display:flex;align-items:center;gap:6px;font-family:var(--disp)}
+  .tl-team img,.tl-team .flag-fallback{width:20px;height:20px;border-radius:3px}
+  .tl-team b{font-weight:600;font-size:13px;letter-spacing:.03em;color:var(--ink)}
+  .tl-team.up{position:relative;padding-left:14px}
+  .tl-team.up::before,.tl-team.down::before{content:"";position:absolute;left:0;
+    width:8px;height:8px;border-radius:50%}
+  .tl-team.up::before{background:var(--pitch)}
+  .tl-team.down{position:relative;padding-left:14px;margin-left:auto}
+  .tl-team.down::before{background:var(--us)}
+  .tl-hint{font-size:9.5px;text-transform:uppercase;letter-spacing:.12em;opacity:.7}
+  .tl-detail{
+    font-family:var(--disp);font-size:13px;color:var(--ink);
+    background:var(--card-edge);border-radius:8px;padding:8px 12px;margin-bottom:10px;
+    min-height:18px;letter-spacing:.02em;
+  }
+  .tl-axis-wrap{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:thin;padding-bottom:2px}
+  .tl-axis-wrap::-webkit-scrollbar{height:5px}
+  .tl-axis-wrap::-webkit-scrollbar-thumb{background:var(--card-edge);border-radius:3px}
+  .tl-axis{position:relative}
+  .tl-line{position:absolute;left:0;right:0;height:3px;border-radius:2px;
+    background:linear-gradient(90deg,var(--pitch),var(--us));opacity:.55}
+  .tl-tick{position:absolute;top:0;bottom:0;display:flex;flex-direction:column;
+    align-items:center;transform:translateX(-50%)}
+  .tl-tickline{position:absolute;top:8px;bottom:8px;width:1px;
+    background:var(--card-edge);opacity:.6}
+  .tl-ticklbl{position:absolute;bottom:-2px;font-family:var(--disp);font-size:9.5px;
+    font-weight:600;letter-spacing:.1em;color:var(--ink-dim)}
+  .tl-mark{
+    position:absolute;width:22px;height:22px;transform:translateX(-50%);
+    display:flex;align-items:center;justify-content:center;
+    background:var(--card);border:1px solid var(--card-edge);border-radius:50%;
+    font-size:12px;cursor:pointer;padding:0;color:var(--ink);
+    -webkit-tap-highlight-color:transparent;transition:transform .12s,border-color .12s;
+  }
+  .tl-mark.goal{border-color:var(--gold);background:rgba(229,181,75,.12)}
+  .tl-mark.sel{transform:translateX(-50%) scale(1.25);border-color:var(--gold);z-index:3}
+  .tl-mark:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+  .tl-mark .card{width:10px;height:14px;border-radius:1px;display:inline-block}
+  .tl-mark .card.y{background:#F2C14E}
+  .tl-mark .card.r{background:var(--live)}
+  .tl-mark .sub-ic{color:var(--pitch);font-size:13px;line-height:1}
+  .feed-note{
+    background:rgba(229,181,75,.08);border:1px solid rgba(229,181,75,.3);
+    border-radius:12px;padding:11px 14px;margin-bottom:11px;
+    font-size:12px;color:var(--ink-dim);line-height:1.55;
+  }
+  .feed-note b{color:var(--gold);font-weight:600}
+
   /* ---------- date strip ---------- */
   .strip-wrap{position:sticky;top:0;z-index:19;background:var(--bg);
     box-shadow:0 10px 14px -10px rgba(0,0,0,.6);}
@@ -141,6 +281,20 @@
     border-radius:22px 10px 10px 10px;padding:13px 14px 12px;margin-bottom:11px;
   }
   .match.live{border-color:var(--live)}
+  .match[data-expand]{cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .match[data-expand]:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+  .match.open{border-color:var(--gold)}
+  .expand-tag{
+    display:flex;align-items:center;justify-content:center;gap:6px;
+    margin-top:11px;padding-top:10px;border-top:1px solid var(--card-edge);
+    font-family:var(--disp);font-size:11px;font-weight:600;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--ink-dim);
+  }
+  .expand-tag .chev{transition:transform .2s;font-size:13px;line-height:1}
+  .expand-tag .chev.up{transform:rotate(180deg)}
+  .match-detail{margin-top:12px}
+  .match-detail .panel{margin-bottom:10px}
+  .match-detail .panel:last-child{margin-bottom:0}
   .meta{
     display:flex;justify-content:space-between;align-items:center;
     font-size:10.5px;color:var(--ink-dim);margin-bottom:10px;
@@ -153,6 +307,9 @@
     animation:pulse 1.4s ease-in-out infinite;
   }
   .meta .state.ft{color:var(--final)}
+  .meta .state.delayed{color:var(--gold);display:flex;align-items:center;gap:5px}
+  .meta .state.delayed::before{content:"";width:7px;height:7px;border-radius:50%;
+    background:var(--gold);animation:pulse 1.4s ease-in-out infinite}
   @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.75)}}
   @media (prefers-reduced-motion:reduce){.meta .state.live::before{animation:none}}
 
@@ -261,6 +418,8 @@
 
 <div class="strip-wrap" id="stripWrap"><div class="stage-rail" id="rail"></div></div>
 
+<div class="mini-bar" id="miniBar" aria-hidden="true"></div>
+
 <main id="main">
   <div class="skel"></div><div class="skel"></div><div class="skel"></div>
 </main>
@@ -289,6 +448,10 @@ const API_SCORES =
   + "?dates=20260601-20260725&limit=400";
 const API_STANDINGS =
   "https://site.api.espn.com/apis/v2/sports/soccer/fifa.world/standings?season=2026";
+/* per-match detailed feed — updates live even when the scoreboard summary lags */
+const summaryURL = id =>
+  `https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/summary?event=${id}`;
+const MATCH_MAX_MIN = 150;   // kickoff + stoppage + half-time: outer bound of "could still be live"
 
 const $rail = document.getElementById("rail");
 const $stripWrap = document.getElementById("stripWrap");
@@ -299,6 +462,11 @@ const $tabMatches = document.getElementById("tabMatches");
 const $tabLive = document.getElementById("tabLive");
 const $tabStandings = document.getElementById("tabStandings");
 const $liveBadge = document.getElementById("liveBadge");
+const $miniBar = document.getElementById("miniBar");
+let miniObserver = null;
+let miniEventId = null;
+let expandedId = null;        // Matches-tab accordion: which match is expanded
+let expandLoading = false;
 
 let events = [];            // all tournament events from API
 let groups = null;          // parsed standings groups
@@ -335,6 +503,22 @@ function logoHTML(url, abbr, cls){
         onerror="this.outerHTML='<div class=&quot;flag-fallback ${cls||""}&quot;>${esc(abbr)}</div>'">`
     : `<div class="flag-fallback ${cls||""}">${esc(abbr)}</div>`;
 }
+/* Live clock that advances gently between polls. Feed gives e.g. "23'";
+   we add elapsed wall-time since it arrived (capped at +2', snapped back
+   on the next poll). Frozen at half-time and for "+" stoppage displays. */
+function liveClockText(e){
+  const st = e.status?.type || {};
+  const disp = st.shortDetail || st.detail || "";
+  if(st.state !== "in") return disp || "LIVE";
+  const raw = st.displayClock || "";
+  // freeze on half-time or stoppage-time formats we can't safely increment
+  if(/ht|half/i.test(disp) || raw.includes("+") || !/^\d+'?$/.test(raw)) return disp || raw || "LIVE";
+  const base = parseInt(raw, 10);
+  if(isNaN(base)) return disp || "LIVE";
+  const elapsedMin = e._clockAt ? Math.floor((Date.now() - e._clockAt)/60000) : 0;
+  const shown = base + Math.min(2, Math.max(0, elapsedMin));
+  return `${shown}'`;
+}
 
 /* ---------- tabs ---------- */
 function setView(v){
@@ -349,7 +533,7 @@ function setView(v){
     renderDay();
   } else if(v==="live"){
     renderLive();
-    refreshLive();        // instant freshness on opening the tab
+    refreshLiveMatches();   // instant freshness on opening the tab
   } else {
     renderStandings();
     if(!groups) loadStandings();
@@ -364,9 +548,33 @@ function liveEvents(){
   return events.filter(e => e.status?.type?.state === "in");
 }
 function updateLiveBadge(){
-  const n = liveEvents().length;
+  const ids = new Set(liveEvents().map(e=>e.id));
+  events.filter(isFeedStale).forEach(e => ids.add(e.id));
+  const n = ids.size;
   $tabLive.classList.toggle("has-live", n > 0);
   $liveBadge.textContent = n;
+}
+
+/* minutes since (or until, if negative) a match's scheduled kickoff */
+function minsSinceKO(e){
+  return (Date.now() - new Date(e.date)) / 60000;
+}
+/* a match the clock says should be underway (within the plausible match window) */
+function shouldBeLive(e){
+  const m = minsSinceKO(e);
+  return m >= 0 && m <= MATCH_MAX_MIN && e.status?.type?.state !== "post";
+}
+/* feed insists a match is still 'pre' even though kickoff has clearly passed */
+function isFeedStale(e){
+  const m = minsSinceKO(e);
+  return e.status?.type?.state === "pre" && m >= 2 && m <= MATCH_MAX_MIN;
+}
+/* which matches warrant fast per-match polling right now */
+function matchesToPoll(){
+  return events.filter(e =>
+    e.status?.type?.state === "in" ||   // confirmed live
+    shouldBeLive(e)                      // should be live (covers stale-feed case)
+  );
 }
 
 /* ---------- date strip ---------- */
@@ -398,6 +606,7 @@ function buildRail(){
 
 function selectDay(key, fromUser){
   selectedKey = key;
+  expandedId = null;   // collapse any open accordion when changing day
   document.querySelectorAll(".day").forEach(b=>{
     b.classList.toggle("sel", b.dataset.key === key);
   });
@@ -444,50 +653,232 @@ function scheduleNext(){
   clearTimeout(timer);
   clearInterval(fastTimer);
   fastTimer = null;
-  const anyLiveOrSoon = events.some(e=>{
-    const st = e.status?.type?.state;
-    if(st === "in") return true;
-    if(st === "pre"){
-      const mins = (new Date(e.date) - Date.now()) / 60000;
-      return mins > -30 && mins < 20;
-    }
-    return false;
+  /* poll fast if anything is live, should-be-live, or kicking off very soon */
+  const active = matchesToPoll().length > 0;
+  const soon = events.some(e => {
+    const m = minsSinceKO(e);
+    return e.status?.type?.state === "pre" && m > -20 && m < 0;
   });
-  if(anyLiveOrSoon){
-    /* light ±1-day poll: small payload, safe to run often */
-    fastTimer = setInterval(refreshLive, view==="live" ? 15_000 : 20_000);
+  if(active || soon){
+    fastTimer = setInterval(refreshLiveMatches, view==="live" ? 10_000 : 15_000);
   }
   timer = setTimeout(load, 300_000);   // full tournament resync every 5 min
 }
 
-/* ---------- fast live refresh: only a 3-day window, merged by id ---------- */
-async function refreshLive(){
+/* ------------------------------------------------------------------ */
+/*  Per-match live poll — hits each match's detailed summary endpoint  */
+/*  (updates live even when the aggregate scoreboard feed lags).        */
+/* ------------------------------------------------------------------ */
+async function refreshLiveMatches(){
   if(inflight || document.visibilityState !== "visible") return;
+  const targets = matchesToPoll();
+  if(!targets.length){ scheduleNext(); return; }
   inflight = true;
+  let changed = false;
   try{
-    const f = x => `${x.getUTCFullYear()}${pad(x.getUTCMonth()+1)}${pad(x.getUTCDate())}`;
-    const from = new Date(Date.now() - 864e5), to = new Date(Date.now() + 864e5);
-    const url = "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard"
-              + `?dates=${f(from)}-${f(to)}&limit=50`;
-    const res = await fetch(url, {cache:"no-store"});
-    if(res.ok){
-      const data = await res.json();
-      const fresh = data.events || [];
-      if(fresh.length){
-        const byId = new Map(events.map(ev => [ev.id, ev]));
-        for(const ev of fresh) byId.set(ev.id, ev);
-        events = [...byId.values()]
-          .sort((a,b)=> new Date(a.date) - new Date(b.date));
-        updateLiveBadge();
-        $sync.classList.remove("stale");
-        $syncText.textContent = "updated " +
-          new Date().toLocaleTimeString([], {hour:"numeric", minute:"2-digit"});
-        if(view === "matches") renderDay();
-        else if(view === "live") renderLive();
+    const results = await Promise.allSettled(
+      targets.map(e => fetch(summaryURL(e.id), {cache:"no-store"})
+        .then(r => r.ok ? r.json() : null))
+    );
+    results.forEach((res, i) => {
+      if(res.status !== "fulfilled" || !res.value) return;
+      const merged = mergeSummary(targets[i], res.value);
+      if(merged){
+        const idx = events.findIndex(ev => ev.id === targets[i].id);
+        if(idx >= 0){ events[idx] = merged; changed = true; }
       }
+    });
+    if(changed){
+      updateLiveBadge();
+      $sync.classList.remove("stale");
+      $syncText.textContent = "updated " +
+        new Date().toLocaleTimeString([], {hour:"numeric", minute:"2-digit"});
+      if(view === "matches") renderDay();
+      else if(view === "live") renderLive();
     }
-  }catch(err){ /* quiet — the 5-min full resync surfaces errors */ }
+  }catch(err){ /* quiet — the 5-min full resync surfaces hard errors */ }
   inflight = false;
+}
+
+/* Fold a /summary response into our scoreboard-shaped event object.
+   The summary nests live status under header.competitions[0]; we copy the
+   live bits (status, scores, scoring plays) onto the existing event so the
+   renderers keep working unchanged. */
+function mergeSummary(base, summary){
+  try{
+    const hdrComp = summary.header?.competitions?.[0];
+    if(!hdrComp) return null;
+    const e = JSON.parse(JSON.stringify(base));   // clone, don't mutate in place
+    const comp = e.competitions?.[0];
+    if(!comp) return null;
+
+    // live status (state, clock, "45'+2", FT, etc.)
+    if(hdrComp.status){
+      comp.status = hdrComp.status;
+      e.status = hdrComp.status;
+    }
+    // live scores, matched by competitor id
+    const liveScores = {};
+    (hdrComp.competitors||[]).forEach(c => { liveScores[c.id] = c.score; });
+    (comp.competitors||[]).forEach(c => {
+      if(liveScores[c.id] != null) c.score = liveScores[c.id];
+    });
+    // scoring plays + cards live under summary.keyEvents (or .commentary)
+    const ev = summary.keyEvents || summary.scoringPlays || [];
+    if(ev.length) comp.details = ev;
+
+    // home/away id map for side assignment
+    const homeId = String((comp.competitors||[]).find(c=>c.homeAway==="home")?.id
+                 || (comp.competitors||[])[0]?.id || "");
+
+    // ---- normalized timeline (Live tab) ----
+    // team display names + abbreviations for attribution
+    const teamName = {}, teamAbbr = {};
+    (comp.competitors||[]).forEach(c => {
+      teamName[String(c.id)] = c.team?.shortDisplayName || c.team?.displayName || "";
+      teamAbbr[String(c.id)] = c.team?.abbreviation || "";
+    });
+
+    // pull a player name: prefer structured athlete, else parse from commentary text.
+    // ESPN text reads like "Teboho Mokoena (South Africa) is shown the yellow card…"
+    // or "Goal! Mexico 1, South Africa 0. Julián Quiñones (Mexico) left-footed…" —
+    // the player name always sits immediately before " (Team)".
+    const playerName = (k, txt) => {
+      const a = k.athletesInvolved?.[0] || k.participants?.[0]?.athlete || k.participants?.[0];
+      const fromObj = (a?.shortName || a?.displayName || a?.fullName || "").trim();
+      if(fromObj) return fromObj;
+      const m = txt.match(/([^.!?]+?)\s*\(/);   // text up to the first "(Team)"
+      return m ? m[1].trim() : "";
+    };
+
+    e._timeline = (summary.keyEvents || []).map(k => {
+      const t = (k.type?.text || k.type?.name || "").toLowerCase();
+      const txt = (k.text || k.shortText || "").trim();
+      const blob = (txt + " " + t).toLowerCase();
+      const who = playerName(k, txt);
+      const side = String(k.team?.id||"") === homeId ? "home" : "away";
+
+      // classify — only the moments that matter survive the filter
+      let kind = null, label = "", desc = "";
+      if(k.scoringPlay || /\bgoal\b/.test(blob) && !/disallow|no goal|ruled out/.test(blob)){
+        kind = k.ownGoal || /own goal/.test(blob) ? "og"
+             : (k.penaltyKick || /penalty/.test(blob)) ? "pen" : "goal";
+        label = who || "Goal";
+        desc = teamName[String(k.team?.id||"")] || "";
+        if(kind==="pen") desc += desc ? " · penalty" : "penalty";
+        if(kind==="og")  desc += desc ? " · own goal" : "own goal";
+      } else if(k.redCard || /red card|sent off|second (yellow|booking)|two yellow/.test(blob)){
+        kind = "red"; label = who || "Red card"; desc = "Red card";
+      } else if(k.yellowCard || /yellow card|booked|caution/.test(blob)){
+        kind = "yellow"; label = who || "Yellow card"; desc = "Yellow card";
+      } else if(/substitut/.test(blob)){
+        kind = "sub"; label = who || "Substitution"; desc = "Substitution";
+      } else if(/\bvar\b|video review|video assistant/.test(blob)){
+        kind = "var"; label = "VAR review"; desc = txt.slice(0,60);
+      } else if(/half ends|half-?time|end of (the )?first half/.test(blob)){
+        kind = "period"; label = "Half-time";
+      } else if(/full[- ]?time|match ends|second half ends|end of (the )?(second|2nd) half/.test(blob)){
+        kind = "period"; label = "Full-time";
+      }
+      // everything else (delays, drinks breaks, generic commentary) → null → filtered out
+
+      return {
+        kind, label, desc,
+        who,
+        team: teamName[String(k.team?.id||"")] || "",
+        teamAbbr: teamAbbr[String(k.team?.id||"")] || "",
+        min: k.clock?.displayValue || "",
+        side,
+        order: typeof k.clock?.value === "number" ? k.clock.value
+             : (kind==="period" && /full/.test(label) ? 1e9 : 0),
+      };
+    }).filter(x => x.kind);   // keep only goals, cards, subs, VAR, period markers
+
+    // ---- compact scorer / red-card summary line (under the score) ----
+    e._summaryLine = e._timeline
+      .filter(x => ["goal","pen","og","red"].includes(x.kind))
+      .sort((a,b)=> (a.order||0) - (b.order||0))   // chronological
+      .map(x => ({ kind: x.kind, who: x.who || (x.kind==="red"?"Red card":"Goal"),
+                   min: x.min, side: x.side }));
+
+    // ---- normalized live stats (Live tab) ----
+    const STAT_SET = [
+      ["possessionPct","Possession"],
+      ["totalShots","Shots"],
+      ["shotsOnTarget","On target"],
+      ["wonCorners","Corners"],
+      ["foulsCommitted","Fouls"],
+      ["offsides","Offsides"],
+      ["yellowCards","Yellow cards"],
+    ];
+    const teamStats = (summary.boxscore?.teams || []);
+    const byTeam = {};
+    teamStats.forEach(ts => {
+      const id = String(ts.team?.id||"");
+      byTeam[id] = {};
+      (ts.statistics||[]).forEach(s => {
+        byTeam[id][s.name] = s.displayValue ?? s.value;
+      });
+    });
+    const homeStats = byTeam[homeId] || {};
+    const awayId = Object.keys(byTeam).find(k => k !== homeId);
+    const awayStats = byTeam[awayId] || {};
+    e._stats = STAT_SET.map(([name,label]) => {
+      const h = homeStats[name], a = awayStats[name];
+      if(h == null && a == null) return null;
+      return { label, home: h ?? "0", away: a ?? "0", pct: name.endsWith("Pct") };
+    }).filter(Boolean);
+
+    // ---- match leaders (top performer per side) — best effort ----
+    // ESPN nests these under summary.leaders[].leaders[] (by team). We pick a
+    // curated set and degrade silently if the feed doesn't carry them.
+    const LEADER_SET = [
+      ["shots","Total shots"],
+      ["passes","Accurate passes"],
+      ["defensive","Defensive"],
+      ["saves","Saves"],
+    ];
+    const leaderByTeam = {};   // teamId -> { categoryNameLower -> {who, num, val, sub} }
+    (summary.leaders || []).forEach(group => {
+      const tid = String(group.team?.id || "");
+      leaderByTeam[tid] = {};
+      (group.leaders || []).forEach(cat => {
+        const key = (cat.name || cat.displayName || cat.shortDisplayName || "").toLowerCase();
+        const top = cat.leaders?.[0];
+        if(top){
+          const ath = top.athlete || {};
+          leaderByTeam[tid][key] = {
+            who: ath.shortName || ath.displayName || "",
+            num: ath.jersey || "",
+            val: top.displayValue ?? top.value ?? "",
+          };
+        }
+      });
+    });
+    const pickLeader = (tid, needles) => {
+      const cats = leaderByTeam[tid] || {};
+      for(const n of needles){
+        const hit = Object.keys(cats).find(k => k.includes(n));
+        if(hit) return cats[hit];
+      }
+      return null;
+    };
+    // category -> the substrings we'll accept in the feed's category names
+    const LEADER_MATCH = {
+      shots:["shot"], passes:["pass"],
+      defensive:["defensive","tackle","intervention","clearance"], saves:["save"],
+    };
+    e._leaders = LEADER_SET.map(([key,label]) => {
+      const h = pickLeader(homeId, LEADER_MATCH[key]);
+      const a = pickLeader(awayId, LEADER_MATCH[key]);
+      if(!h && !a) return null;
+      return { label, home: h, away: a };
+    }).filter(Boolean);
+
+    // remember when we received this clock, for local ticking between polls
+    e._clockAt = Date.now();
+    return e;
+  }catch(_){ return null; }
 }
 
 /* ---------- data: standings ---------- */
@@ -527,7 +918,71 @@ async function loadStandings(){
 }
 
 /* ---------- rendering: matches ---------- */
+/* accordion: expand a match card into the full detail panel, fetching its
+   summary on demand if we don't already have it (e.g. finished matches). */
+async function toggleExpand(id){
+  if(expandedId === id){ expandedId = null; renderDay(); return; }
+  expandedId = id;
+  const e = events.find(x => x.id === id);
+  const needFetch = e && e._timeline === undefined &&
+    ["in","post"].includes(e.status?.type?.state);
+  expandLoading = needFetch;
+  renderDay();
+  // scroll the opened card into view
+  const card = $main.querySelector(`[data-expand="${CSS.escape(String(id))}"]`);
+  if(card) card.scrollIntoView({block:"nearest", behavior:"smooth"});
+
+  if(needFetch){
+    try{
+      const res = await fetch(summaryURL(id), {cache:"no-store"});
+      if(res.ok){
+        const merged = mergeSummary(e, await res.json());
+        if(merged){
+          const i = events.findIndex(x => x.id === id);
+          if(i >= 0) events[i] = merged;
+        }
+      } else {
+        // mark as fetched-but-empty so we don't show a spinner forever
+        if(e) e._timeline = e._timeline || [];
+      }
+    }catch(_){ if(e) e._timeline = e._timeline || []; }
+    expandLoading = false;
+    if(expandedId === id && view === "matches") renderDay();
+  }
+}
+
+// event delegation for taps + keyboard on expandable cards
+function showMarkDetail(mark){
+  const chart = mark.closest(".tl-chart");
+  if(!chart) return;
+  const detail = chart.querySelector(".tl-detail");
+  if(detail) detail.textContent = mark.dataset.detail || "";
+  chart.querySelectorAll(".tl-mark.sel").forEach(m => m.classList.remove("sel"));
+  mark.classList.add("sel");
+}
+
+$main.addEventListener("click", ev => {
+  // timeline markers work on both tabs; handle first so they don't toggle the card
+  const mark = ev.target.closest(".tl-mark");
+  if(mark){ showMarkDetail(mark); return; }
+  if(view !== "matches") return;
+  // taps inside the expanded detail (stats/leaders/timeline) must not collapse the card
+  if(ev.target.closest(".match-detail")) return;
+  const card = ev.target.closest("[data-expand]");
+  if(card) toggleExpand(card.dataset.expand);
+});
+$main.addEventListener("keydown", ev => {
+  if(ev.key !== "Enter" && ev.key !== " ") return;
+  const mark = ev.target.closest(".tl-mark");
+  if(mark){ ev.preventDefault(); showMarkDetail(mark); return; }
+  if(view !== "matches") return;
+  if(ev.target.closest(".match-detail")) return;
+  const card = ev.target.closest("[data-expand]");
+  if(card){ ev.preventDefault(); toggleExpand(card.dataset.expand); }
+});
+
 function renderDay(){
+  clearMiniBar();
   const dayEvents = events.filter(e => localKey(new Date(e.date)) === selectedKey);
   let html = `<div class="day-head">${fmtDayHead(selectedKey)}</div>`;
 
@@ -555,10 +1010,14 @@ function renderMatch(e, withDetails){
   if(!home || !away) return "";
 
   let stateHTML, right = null;
+  const stale = isFeedStale(e);
   if(state === "in"){
-    stateHTML = `<span class="state live">${esc(status.shortDetail || "LIVE")}</span>`;
+    stateHTML = `<span class="state live"><span class="live-clock">${esc(liveClockText(e))}</span></span>`;
   } else if(state === "post"){
     stateHTML = `<span class="state ft">${esc(status.shortDetail || "FT")}</span>`;
+  } else if(stale){
+    stateHTML = `<span class="state delayed">In progress</span>`;
+    right = fmtTime(e.date);
   } else {
     stateHTML = `<span class="state">Scheduled</span>`;
     right = fmtTime(e.date);
@@ -600,7 +1059,26 @@ function renderMatch(e, withDetails){
   }
 
   const showScores = state !== "pre";
-  return `<div class="match${state==="in"?" live":""}">
+  const state2 = e.status?.type?.state;
+  const canExpand = state2 === "in" || state2 === "post";
+  const isOpen = canExpand && expandedId === e.id;
+
+  // inline detail (accordion) — only for live / finished matches
+  let detailBlock = "";
+  if(isOpen){
+    if(e._timeline === undefined && expandLoading){
+      detailBlock = `<div class="match-detail"><div class="skel" style="height:60px"></div></div>`;
+    } else {
+      const inner = statsPanelHTML(e) + leadersPanelHTML(e) + timelinePanelHTML(e);
+      detailBlock = inner
+        ? `<div class="match-detail">${inner}</div>`
+        : `<div class="match-detail"><div class="notice" style="padding:20px">
+             Detailed stats aren't available for this match.</div></div>`;
+    }
+  }
+
+  return `<div class="match${state==="in"?" live":""}${isOpen?" open":""}"
+       ${canExpand?`data-expand="${esc(e.id)}" role="button" tabindex="0"`:""}>
     <div class="meta"><span>${esc(note)}</span>${stateHTML}</div>
     <div style="display:flex;align-items:stretch">
       <div style="flex:1;min-width:0">
@@ -611,23 +1089,291 @@ function renderMatch(e, withDetails){
     </div>
     ${detailsHTML}
     ${venue ? `<div class="venue">${esc(venue)}</div>` : ""}
+    ${canExpand ? `<div class="expand-tag">${isOpen?"Hide details":"Match details"}
+      <span class="chev${isOpen?" up":""}">▾</span></div>` : ""}
+    ${detailBlock}
   </div>`;
 }
 
 /* ---------- rendering: live ---------- */
+function statsPanelHTML(e){
+  const stats = e._stats || [];
+  if(!stats.length) return "";
+  const rows = stats.map(s => {
+    let hPct = 50;
+    if(s.pct){
+      hPct = parseFloat(String(s.home)) || 0;
+    } else {
+      const h = parseFloat(String(s.home))||0, a = parseFloat(String(s.away))||0;
+      hPct = (h+a) > 0 ? (h/(h+a))*100 : 50;
+    }
+    const aPct = 100 - hPct;
+    return `<div class="stat">
+      <div class="vals"><span>${esc(s.home)}</span>
+        <span class="lbl">${esc(s.label)}</span>
+        <span>${esc(s.away)}</span></div>
+      <div class="bar"><span class="h" style="width:${hPct.toFixed(1)}%"></span>
+        <span class="a" style="width:${aPct.toFixed(1)}%"></span></div>
+    </div>`;
+  }).join("");
+  return `<div class="panel"><div class="panel-sec" style="border-top:none">
+    <h3>Match stats</h3>${rows}</div></div>`;
+}
+
+/* horizontal, scrollable match timeline: KO → HT → FT axis.
+   Home events above the line, away below; markers tappable for detail. */
+function timelinePanelHTML(e){
+  const all = (e._timeline || []);
+  const evs = all.filter(x => x.kind !== "period");
+  if(!evs.length) return "";
+
+  const comp = e.competitions?.[0] || {};
+  const home = (comp.competitors||[]).find(c=>c.homeAway==="home") || (comp.competitors||[])[0];
+  const away = (comp.competitors||[]).find(c=>c.homeAway==="away") || (comp.competitors||[])[1];
+
+  // "9'" -> 9, "45'+4'" -> 49, "90'+2'" -> 92
+  const parseMin = m => {
+    const mm = String(m).match(/(\d+)'?(?:\+(\d+))?/);
+    return mm ? parseInt(mm[1],10) + (mm[2]?parseInt(mm[2],10):0) : 0;
+  };
+  const items = evs.map(x => ({ ...x, n: parseMin(x.min) }))
+    .sort((a,b)=> a.n - b.n);
+
+  const maxN = Math.max(95, ...items.map(x=>x.n));
+  const SCALE = 13, PAD_L = 20, PAD_R = 28, GAP = 26;
+  const xOf = n => PAD_L + n * SCALE;
+  const trackW = xOf(maxN) + PAD_R;
+
+  // lane assignment per side to avoid overlap
+  const lanes = { home: [], away: [] };
+  const placed = items.map(x => {
+    const arr = lanes[x.side] || (lanes[x.side] = []);
+    const x0 = xOf(x.n);
+    let lane = 0;
+    while(arr[lane] !== undefined && x0 - arr[lane] < GAP) lane++;
+    arr[lane] = x0;
+    return { ...x, x0, lane };
+  });
+  const maxLane = s => Math.max(0, ...placed.filter(p=>p.side===s).map(p=>p.lane));
+  const LANE_H = 26, BASE = 16, MK = 22, CENTER_PAD = 10, PAD_V = 12;
+  const upH   = PAD_V + BASE + maxLane("home")*LANE_H + MK;
+  const downH = BASE + maxLane("away")*LANE_H + MK + PAD_V;
+  const centerY = upH + CENTER_PAD/2;
+  const H = upH + downH + CENTER_PAD;
+
+  const icon = k => ({
+    goal:"⚽", pen:"⚽", og:"⚽",
+    yellow:`<span class="card y"></span>`, red:`<span class="card r"></span>`,
+    sub:`<span class="sub-ic">⇄</span>`, var:"▦",
+  }[k] || "·");
+  const kindWord = k => ({
+    goal:"Goal", pen:"Penalty goal", og:"Own goal",
+    yellow:"Yellow card", red:"Red card", sub:"Substitution", var:"VAR review",
+  }[k] || "");
+
+  const marks = placed.map(p => {
+    const isUp = p.side === "home";
+    const y = isUp
+      ? centerY - CENTER_PAD/2 - (BASE + p.lane*LANE_H) - MK
+      : centerY + CENTER_PAD/2 + (BASE + p.lane*LANE_H);
+    const goalCls = ["goal","pen","og"].includes(p.kind) ? " goal" : "";
+    const detail = [p.who || kindWord(p.kind), p.teamAbbr || p.team, kindWord(p.kind), p.min]
+      .filter(Boolean).join(" · ");
+    return `<button class="tl-mark${goalCls}" type="button"
+        style="left:${p.x0}px;top:${y}px" data-detail="${esc(detail)}"
+        aria-label="${esc(detail)}">${icon(p.kind)}</button>`;
+  }).join("");
+
+  // tick labels: KO, HT (≈45'), FT (end)
+  const tick = (n, lbl) => `<div class="tl-tick" style="left:${xOf(n)}px">
+      <span class="tl-tickline"></span><span class="tl-ticklbl">${lbl}</span></div>`;
+  const ticks = tick(0,"KO") + tick(45,"HT") + tick(maxN, maxN>=90?"FT":"");
+
+  const teamTag = (t, cls) => {
+    const tm = t?.team || {};
+    return `<span class="tl-team ${cls}">${logoHTML(tm.logo, tm.abbreviation||"—")}
+      <b>${esc(tm.abbreviation||"")}</b></span>`;
+  };
+
+  return `<div class="panel"><div class="panel-sec" style="border-top:none">
+    <h3>Timeline</h3>
+    <div class="tl-legend">
+      ${teamTag(home,"up")}<span class="tl-hint">tap a marker</span>${teamTag(away,"down")}
+    </div>
+    <div class="tl-chart">
+      <div class="tl-detail">Tap any marker for details</div>
+      <div class="tl-axis-wrap">
+        <div class="tl-axis" style="width:${trackW}px;height:${H}px">
+          <div class="tl-line" style="top:${centerY}px"></div>
+          ${ticks}
+          ${marks}
+        </div>
+      </div>
+    </div>
+  </div></div>`;
+}
+
+/* compact scorer / red-card line shown under the score card */
+function summaryLineHTML(e){
+  const items = e._summaryLine || [];
+  if(!items.length) return "";
+  const cell = x => {
+    const ic = x.kind==="red" ? `<span class="card r sl"></span>` : "⚽";
+    return `<span class="sl-item">${ic} ${esc(x.who)} <span class="sl-min">${esc(x.min)}</span></span>`;
+  };
+  return `<div class="summary-line">${items.map(cell).join("")}</div>`;
+}
+
+/* match leaders — ESPN style: centered category, value beside each name */
+function leadersPanelHTML(e){
+  const ls = e._leaders || [];
+  if(!ls.length) return "";
+  const sideH = p => p
+    ? `<span class="lv">${esc(p.val||"")}</span>
+       <span class="ln">${p.num?`<span class="num">${esc(p.num)}</span>`:""}${esc(p.who||"—")}</span>`
+    : `<span class="lv"></span><span class="ln">—</span>`;
+  const sideA = p => p
+    ? `<span class="ln">${esc(p.who||"—")}${p.num?`<span class="num">${esc(p.num)}</span>`:""}</span>
+       <span class="lv">${esc(p.val||"")}</span>`
+    : `<span class="ln">—</span><span class="lv"></span>`;
+  const rows = ls.map(l => `<div class="lead">
+      <div class="lead-side h">${sideH(l.home)}</div>
+      <div class="lead-cat">${esc(l.label)}</div>
+      <div class="lead-side a">${sideA(l.away)}</div>
+    </div>`).join("");
+  return `<div class="panel"><div class="panel-sec" style="border-top:none">
+    <h3>Match leaders</h3>${rows}</div></div>`;
+}
+
+function scorecardHTML(e, forSticky){
+  const comp = e.competitions?.[0] || {};
+  const home = (comp.competitors||[]).find(c=>c.homeAway==="home") || (comp.competitors||[])[0];
+  const away = (comp.competitors||[]).find(c=>c.homeAway==="away") || (comp.competitors||[])[1];
+  if(!home || !away) return "";
+  const stale = isFeedStale(e);
+  const live = e.status?.type?.state === "in";
+  const clockTxt = stale ? "In progress" : liveClockText(e);
+  const showScore = !stale;
+  const clockCls = stale ? "delayed" : live ? "live" : "";
+
+  if(forSticky){
+    const mini = t => `${logoHTML(t.team?.logo, t.team?.abbreviation||"—")}
+      <span class="mini-abbr">${esc(t.team?.abbreviation||"")}</span>`;
+    return `<div class="mini-side">${mini(home)}</div>
+      <div class="mini-mid">
+        ${showScore ? `<span class="mini-score">${esc(home.score??"0")} – ${esc(away.score??"0")}</span>` : ""}
+        <span class="mini-clock ${clockCls}">${esc(clockTxt)}</span>
+      </div>
+      <div class="mini-side a">${mini(away)}</div>`;
+  }
+
+  const formPips = f => !f ? "" : `<div class="form">` +
+    [...String(f)].slice(-5).map(c => {
+      const k = c==="W"?"w":c==="L"?"l":"d";
+      return `<span class="pip ${k}"></span>`;
+    }).join("") + `</div>`;
+  const sideCol = t => {
+    const team = t.team || {};
+    const name = team.shortDisplayName || team.displayName || "TBD";
+    return `<div class="sc-side">
+      ${logoHTML(team.logo, team.abbreviation||"—")}
+      <div class="sc-name">${esc(name)}</div>
+      ${formPips(t.form)}
+    </div>`;
+  };
+  return `<div class="scorecard">
+    ${sideCol(home)}
+    <div class="sc-mid">
+      ${showScore ? `<div class="sc-score">${esc(home.score??"0")}<span class="sc-dash">–</span>${esc(away.score??"0")}</div>` : ""}
+      <div class="sc-clock ${clockCls}">${esc(clockTxt)}</div>
+    </div>
+    ${sideCol(away)}
+  </div>`;
+}
+
+function livePanelHTML(e){
+  const comp = e.competitions?.[0] || {};
+  const note = comp.notes?.[0]?.headline || "";
+  const venue = comp.venue
+    ? [comp.venue.fullName, comp.venue.address?.city].filter(Boolean).join(" · ") : "";
+  if(!comp.competitors || comp.competitors.length < 2) return "";
+  const stale = isFeedStale(e);
+  const live = e.status?.type?.state === "in";
+
+  // 1) standalone score-card panel (detached, own border) — observed for sticky bar
+  const scorePanel = `<div class="panel score-panel ${live?"live":""}" data-live-card="${esc(e.id)}">
+    <div class="panel-sec" style="border-top:none">
+      ${note ? `<div class="sc-comp">${esc(note)}</div>` : ""}
+      ${scorecardHTML(e, false)}
+      ${stale ? "" : summaryLineHTML(e)}
+    </div>
+  </div>`;
+
+  if(stale){
+    return scorePanel;   // during stale window, just the card
+  }
+
+  // 2+) separate panels for the rest
+  return scorePanel
+    + statsPanelHTML(e)
+    + leadersPanelHTML(e)
+    + timelinePanelHTML(e)
+    + (venue ? `<div class="panel"><div class="panel-sec" style="border-top:none">
+        <div class="venue" style="border-top:none">${esc(venue)}</div></div></div>` : "");
+}
+
+/* sticky mini-scoreboard: show once the full score card scrolls out of view */
+function clearMiniBar(){
+  if(miniObserver){ miniObserver.disconnect(); miniObserver = null; }
+  miniEventId = null;
+  $miniBar.classList.remove("show");
+  $miniBar.setAttribute("aria-hidden", "true");
+  $miniBar.innerHTML = "";
+}
+function setupMiniBar(e){
+  clearMiniBar();
+  miniEventId = e.id;
+  $miniBar.innerHTML = scorecardHTML(e, true);
+  const card = $main.querySelector(`[data-live-card="${CSS.escape(String(e.id))}"]`);
+  const IO = (typeof IntersectionObserver !== "undefined") ? IntersectionObserver : null;
+  if(!card || !IO) return;
+  // reveal the bar when the full card leaves the top of the viewport
+  miniObserver = new IO(([entry]) => {
+    const past = entry.boundingClientRect.bottom < (entry.rootBounds?.top ?? 0) + 4;
+    $miniBar.classList.toggle("show", !entry.isIntersecting && past);
+    $miniBar.setAttribute("aria-hidden", String(!(!entry.isIntersecting && past)));
+  }, { rootMargin: "-1px 0px 0px 0px", threshold: 0 });
+  miniObserver.observe(card);
+}
+
 function renderLive(){
   if(!events.length){
     $main.innerHTML = `<div class="skel"></div><div class="skel"></div>`;
     return;
   }
-  const live = liveEvents();
-  if(live.length){
-    $main.innerHTML =
-      `<div class="day-head">Live now · ${live.length} match${live.length>1?"es":""}</div>`
-      + live.map(e => renderMatch(e, true)).join("");
+  const confirmed = liveEvents();
+  const stale = events.filter(isFeedStale);
+  const shown = [...confirmed, ...stale.filter(e => !confirmed.includes(e))]
+    .sort((a,b)=> new Date(a.date) - new Date(b.date));
+
+  if(shown.length){
+    const n = shown.length;
+    let html = `<div class="day-head">Live now · ${n} match${n>1?"es":""}</div>`;
+    if(stale.length){
+      html += `<div class="feed-note">⚠ <b>Data feed catching up.</b>
+        ${stale.length>1?"Some matches have":"This match has"} kicked off, but
+        ESPN's feed hasn't published the live clock and score yet — they'll fill in
+        automatically once it does. Times shown are kickoff times.</div>`;
+    }
+    html += shown.map(livePanelHTML).join("");
+    $main.innerHTML = html;
+    setupMiniBar(shown[0]);   // pin the first (earliest) live match's score on scroll
     return;
   }
-  /* nothing live — point to the next kickoff */
+
+  clearMiniBar();
+
+  /* genuinely nothing on — point to the next kickoff */
   const next = events.find(e =>
     e.status?.type?.state === "pre" && new Date(e.date) > Date.now());
   let html = `<div class="day-head">Live now</div>
@@ -649,6 +1395,7 @@ function renderLive(){
 
 /* ---------- rendering: standings ---------- */
 function renderStandings(){
+  clearMiniBar();
   if(!groups){
     $main.innerHTML = `<div class="skel"></div><div class="skel"></div><div class="skel"></div>`;
     return;
@@ -694,6 +1441,27 @@ load();
 document.addEventListener("visibilitychange", ()=>{
   if(document.visibilityState === "visible") load();
 });
+
+/* gentle local clock tick — updates only the minute text, no network, no full re-render */
+setInterval(()=>{
+  if(document.visibilityState !== "visible") return;
+  const live = liveEvents();
+  if(!live.length) return;
+  // Matches-tab cards
+  document.querySelectorAll(".live-clock").forEach((el, i) => {
+    if(live[i]) el.textContent = liveClockText(live[i]);
+  });
+  // Live-tab score-card clocks (skip stale/delayed ones)
+  document.querySelectorAll(".sc-clock.live").forEach((el, i) => {
+    if(live[i]) el.textContent = liveClockText(live[i]);
+  });
+  // sticky mini-bar clock
+  if(miniEventId){
+    const e = live.find(x => x.id === miniEventId);
+    const mc = $miniBar.querySelector(".mini-clock.live");
+    if(e && mc) mc.textContent = liveClockText(e);
+  }
+}, 1000);
 </script>
 </body>
 </html>
