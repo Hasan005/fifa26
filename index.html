@@ -61,7 +61,17 @@
     background:linear-gradient(90deg,var(--us) 0 33.4%,var(--live) 33.4% 66.7%,var(--pitch) 66.7% 100%);
   }
 
-  .tabs{display:flex;gap:8px;padding:12px 0 12px}
+  .tabs{display:flex;align-items:center;gap:8px;padding:12px 0 12px}
+  .watch-chip{
+    margin-left:auto;display:inline-flex;align-items:center;gap:5px;
+    font-size:11.5px;color:var(--ink-dim);font-family:var(--body);
+    background:var(--card);border:1px solid var(--card-edge);
+    border-radius:999px;padding:4px 10px;white-space:nowrap;
+  }
+  .watch-chip b{color:var(--ink);font-family:var(--disp);font-weight:600;
+    font-variant-numeric:tabular-nums}
+  .watch-chip .eye{color:var(--live);font-size:8px;
+    animation:pulse 1.8s ease-in-out infinite}
   .tab{
     font-family:var(--disp);font-weight:500;font-size:14px;letter-spacing:.08em;
     text-transform:uppercase;color:var(--ink-dim);
@@ -407,10 +417,6 @@
   }
   .site-stats b{color:var(--ink);font-family:var(--disp);font-weight:600;
     font-variant-numeric:tabular-nums}
-  .site-stats .watching{display:flex;align-items:center;gap:6px}
-  .site-stats .eye{color:var(--live);font-size:9px;
-    animation:pulse 1.8s ease-in-out infinite}
-  .site-stats .dot-sep{opacity:.5}
   .hide{display:none}
 </style>
 </head>
@@ -426,6 +432,7 @@
     <button class="tab sel" id="tabMatches" role="tab" aria-selected="true">Matches</button>
     <button class="tab" id="tabLive" role="tab" aria-selected="false">Live<span class="badge" id="liveBadge"></span></button>
     <button class="tab" id="tabStandings" role="tab" aria-selected="false">Standings</button>
+    <span class="watch-chip" id="watchChip" hidden><span class="eye">●</span> <b id="liveCount">0</b></span>
   </nav>
 </header>
 
@@ -439,8 +446,6 @@
 
 <footer>
   <div class="site-stats" id="siteStats" hidden>
-    <span class="watching"><span class="eye">●</span> <b id="liveCount">0</b> watching now</span>
-    <span class="dot-sep">·</span>
     <span><b id="totalCount">0</b> total views</span>
   </div>
   Live data from ESPN's public scoreboard feed. Kickoff times shown in your local timezone.
@@ -1545,13 +1550,22 @@ setInterval(()=>{
 (function siteStats(){
   const BASE = "https://fifa-stats.hasan-d5bd.workers.dev";
   const box = document.getElementById("siteStats");
+  const chip = document.getElementById("watchChip");
   const liveEl = document.getElementById("liveCount");
   const totalEl = document.getElementById("totalCount");
   if(!box) return;
 
-  const show = () => { box.hidden = false; };
-  const setLive  = n => { if(n!=null){ liveEl.textContent = n; show(); } };
-  const setTotal = n => { if(n!=null){ totalEl.textContent = Number(n).toLocaleString(); show(); } };
+  // watching chip: only visible when there's genuine company (>= 2)
+  const setLive = n => {
+    if(n == null) return;
+    liveEl.textContent = n;
+    chip.hidden = !(Number(n) >= 2);
+  };
+  const setTotal = n => {
+    if(n == null) return;
+    totalEl.textContent = Number(n).toLocaleString();
+    box.hidden = false;
+  };
 
   // 1) count this visit + get current totals
   fetch(`${BASE}/hit`, {cache:"no-store"})
