@@ -106,6 +106,7 @@
   .scorecard{display:grid;grid-template-columns:1fr auto 1fr;align-items:start;gap:6px}
   .sc-side{display:flex;flex-direction:column;align-items:center;gap:7px;min-width:0}
   .sc-side img,.sc-side .flag-fallback{width:46px;height:46px;border-radius:6px}
+  .sc-accent{display:block;width:30px;height:3px;border-radius:2px;margin-top:-2px}
   .sc-name{font-family:var(--disp);font-weight:600;font-size:15px;letter-spacing:.02em;
     text-align:center;line-height:1.15}
   .sc-mid{display:flex;flex-direction:column;align-items:center;justify-content:center;
@@ -163,8 +164,9 @@
     text-overflow:ellipsis;white-space:nowrap;display:flex;align-items:center;gap:6px}
   .lead-side .lv{font-family:var(--disp);font-weight:700;font-size:18px;color:var(--gold);
     font-variant-numeric:tabular-nums;flex:none}
-  .lead-side .num{font-family:var(--disp);font-size:9.5px;color:var(--ink-dim);
-    border:1px solid var(--card-edge);border-radius:4px;padding:1px 4px;flex:none}
+  .lead-side .num{font-family:var(--disp);font-size:9.5px;font-weight:600;
+    border:1.5px solid var(--card-edge);border-radius:4px;padding:1px 4px;flex:none;
+    color:var(--ink-dim)}
   .panel{
     background:var(--card);border:1px solid var(--card-edge);
     border-radius:22px 10px 10px 10px;margin-bottom:14px;overflow:hidden;
@@ -398,6 +400,17 @@
     text-align:center;font-size:10.5px;color:var(--ink-dim);
     padding:0 24px 28px;line-height:1.7;max-width:560px;margin:0 auto;
   }
+  .site-stats{
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    font-size:11.5px;color:var(--ink-dim);margin-bottom:14px;
+    padding-bottom:14px;border-bottom:1px solid var(--card-edge);
+  }
+  .site-stats b{color:var(--ink);font-family:var(--disp);font-weight:600;
+    font-variant-numeric:tabular-nums}
+  .site-stats .watching{display:flex;align-items:center;gap:6px}
+  .site-stats .eye{color:var(--live);font-size:9px;
+    animation:pulse 1.8s ease-in-out infinite}
+  .site-stats .dot-sep{opacity:.5}
   .hide{display:none}
 </style>
 </head>
@@ -425,6 +438,11 @@
 </main>
 
 <footer>
+  <div class="site-stats" id="siteStats" hidden>
+    <span class="watching"><span class="eye">●</span> <b id="liveCount">0</b> watching now</span>
+    <span class="dot-sep">·</span>
+    <span><b id="totalCount">0</b> total views</span>
+  </div>
   Live data from ESPN's public scoreboard feed. Kickoff times shown in your local timezone.
   Updates every 15–20 seconds while matches are live.
 </footer>
@@ -502,6 +520,37 @@ function logoHTML(url, abbr, cls){
     ? `<img src="${esc(url)}" alt="" loading="lazy"
         onerror="this.outerHTML='<div class=&quot;flag-fallback ${cls||""}&quot;>${esc(abbr)}</div>'">`
     : `<div class="flag-fallback ${cls||""}">${esc(abbr)}</div>`;
+}
+
+/* Curated kit colours for World Cup nations, used when the feed omits team
+   colours. [primary body, trim/sleeves]. Keyed by ESPN abbreviation. */
+const KIT_COLORS = {
+  USA:["#1A2D5A","#FFFFFF"], MEX:["#03683C","#FFFFFF"], RSA:["#007A4D","#FCB514"],
+  KOR:["#C8102E","#0A2240"], CZE:["#D7141A","#FFFFFF"], CAN:["#C8102E","#FFFFFF"],
+  BIH:["#001F5B","#FFD800"], QAT:["#8A1538","#FFFFFF"], SUI:["#D52B1E","#FFFFFF"],
+  BRA:["#FFDF00","#009C3B"], PAR:["#D32011","#FFFFFF"], ARG:["#75AADB","#FFFFFF"],
+  FRA:["#1E2C5C","#FFFFFF"], ENG:["#FFFFFF","#16205A"], GER:["#FFFFFF","#111111"],
+  ESP:["#C60B1E","#1A2D5A"], POR:["#C8102E","#0B6623"], NED:["#F36C21","#FFFFFF"],
+  JPN:["#0A1E5A","#FFFFFF"], AUS:["#FFCD00","#00843D"], CRO:["#E4002B","#FFFFFF"],
+  BEL:["#E30613","#111111"], URU:["#56A0D3","#111111"], COL:["#FCD116","#003087"],
+  MAR:["#C1272D","#006233"], SEN:["#00853F","#FDEF42"], GHA:["#FFFFFF","#006B3F"],
+  NGA:["#008753","#FFFFFF"], CIV:["#FF8200","#FFFFFF"], CMR:["#007A33","#CE1126"],
+  SAU:["#006C35","#FFFFFF"], IRN:["#FFFFFF","#239F40"], AUT:["#ED2939","#FFFFFF"],
+  ITA:["#1B458F","#FFFFFF"], DEN:["#C8102E","#FFFFFF"], NOR:["#BA0C2F","#00205B"],
+  SCO:["#0A2D6E","#FFFFFF"], WAL:["#C8102E","#00B140"], POL:["#FFFFFF","#DC143C"],
+  ECU:["#FFD100","#0033A0"], PER:["#D91023","#FFFFFF"], CHI:["#D52B1E","#0039A6"],
+  PAN:["#DA121A","#005293"], CRC:["#C8102E","#002B7F"], JAM:["#FED100","#009B3A"],
+  EGY:["#C8102E","#FFFFFF"], TUN:["#E70013","#FFFFFF"], DZA:["#007229","#FFFFFF"],
+  NZL:["#FFFFFF","#111111"], UZB:["#0099B5","#FFFFFF"], JOR:["#007A3D","#CE1126"],
+};
+
+/* resolve [primary, trim] for a team, preferring the feed's colours */
+function kitColors(team, abbr){
+  const norm = c => c ? ("#" + String(c).replace(/^#/, "")) : null;
+  const p = norm(team?.color), t = norm(team?.alternateColor);
+  if(p) return [p, t && t.toLowerCase() !== p.toLowerCase() ? t : "#0c0c0c"];
+  if(KIT_COLORS[abbr]) return KIT_COLORS[abbr];
+  return ["#3A3A40", "#1d1d20"];   // neutral fallback
 }
 /* Live clock that advances gently between polls. Feed gives e.g. "23'";
    we add elapsed wall-time since it arrived (capped at +2', snapped back
@@ -622,8 +671,20 @@ async function load(){
     const res = await fetch(API_SCORES, {cache:"no-store"});
     if(!res.ok) throw new Error("HTTP "+res.status);
     const data = await res.json();
+    // carry over any live enrichment (_stats/_timeline/_leaders/etc.) so a
+    // scoreboard resync doesn't momentarily blank out the live panel
+    const prev = new Map(events.map(ev => [ev.id, ev]));
     events = (data.events || []).slice()
-      .sort((a,b)=> new Date(a.date) - new Date(b.date));
+      .sort((a,b)=> new Date(a.date) - new Date(b.date))
+      .map(ev => {
+        const old = prev.get(ev.id);
+        if(old){
+          for(const k of Object.keys(old)){
+            if(k.startsWith("_") && old[k] !== undefined) ev[k] = old[k];
+          }
+        }
+        return ev;
+      });
     $sync.classList.remove("stale");
     $syncText.textContent = "updated " +
       new Date().toLocaleTimeString([], {hour:"numeric", minute:"2-digit"});
@@ -751,7 +812,7 @@ function mergeSummary(base, summary){
       return m ? m[1].trim() : "";
     };
 
-    e._timeline = (summary.keyEvents || []).map(k => {
+    const newTimeline = (summary.keyEvents || []).map(k => {
       const t = (k.type?.text || k.type?.name || "").toLowerCase();
       const txt = (k.text || k.shortText || "").trim();
       const blob = (txt + " " + t).toLowerCase();
@@ -794,8 +855,11 @@ function mergeSummary(base, summary){
       };
     }).filter(x => x.kind);   // keep only goals, cards, subs, VAR, period markers
 
+    // keep previously-good data if this poll's summary lacked key-events
+    if(newTimeline.length || e._timeline === undefined) e._timeline = newTimeline;
+
     // ---- compact scorer / red-card summary line (under the score) ----
-    e._summaryLine = e._timeline
+    e._summaryLine = (e._timeline || [])
       .filter(x => ["goal","pen","og","red"].includes(x.kind))
       .sort((a,b)=> (a.order||0) - (b.order||0))   // chronological
       .map(x => ({ kind: x.kind, who: x.who || (x.kind==="red"?"Red card":"Goal"),
@@ -821,13 +885,16 @@ function mergeSummary(base, summary){
       });
     });
     const homeStats = byTeam[homeId] || {};
-    const awayId = Object.keys(byTeam).find(k => k !== homeId);
+    // away id from the competitors (reliable even when boxscore is absent)
+    const awayId = String((comp.competitors||[]).find(c => String(c.id) !== homeId)?.id
+                 || Object.keys(byTeam).find(k => k !== homeId) || "");
     const awayStats = byTeam[awayId] || {};
-    e._stats = STAT_SET.map(([name,label]) => {
+    const newStats = STAT_SET.map(([name,label]) => {
       const h = homeStats[name], a = awayStats[name];
       if(h == null && a == null) return null;
       return { label, home: h ?? "0", away: a ?? "0", pct: name.endsWith("Pct") };
     }).filter(Boolean);
+    if(newStats.length || e._stats === undefined) e._stats = newStats;
 
     // ---- match leaders (top performer per side) — best effort ----
     // ESPN nests these under summary.leaders[].leaders[] (by team). We pick a
@@ -868,12 +935,13 @@ function mergeSummary(base, summary){
       shots:["shot"], passes:["pass"],
       defensive:["defensive","tackle","intervention","clearance"], saves:["save"],
     };
-    e._leaders = LEADER_SET.map(([key,label]) => {
+    const newLeaders = LEADER_SET.map(([key,label]) => {
       const h = pickLeader(homeId, LEADER_MATCH[key]);
       const a = pickLeader(awayId, LEADER_MATCH[key]);
       if(!h && !a) return null;
       return { label, home: h, away: a };
     }).filter(Boolean);
+    if(newLeaders.length || e._leaders === undefined) e._leaders = newLeaders;
 
     // remember when we received this clock, for local ticking between polls
     e._clockAt = Date.now();
@@ -1228,12 +1296,19 @@ function summaryLineHTML(e){
 function leadersPanelHTML(e){
   const ls = e._leaders || [];
   if(!ls.length) return "";
+  const comp = e.competitions?.[0] || {};
+  const hC = (comp.competitors||[]).find(c=>c.homeAway==="home") || (comp.competitors||[])[0];
+  const aC = (comp.competitors||[]).find(c=>c.homeAway==="away") || (comp.competitors||[])[1];
+  const hCol = kitColors(hC?.team||{}, hC?.team?.abbreviation||"")[0];
+  const aCol = kitColors(aC?.team||{}, aC?.team?.abbreviation||"")[0];
+  const chip = (num, col) => num
+    ? `<span class="num" style="border-color:${col};color:${col}">${esc(num)}</span>` : "";
   const sideH = p => p
     ? `<span class="lv">${esc(p.val||"")}</span>
-       <span class="ln">${p.num?`<span class="num">${esc(p.num)}</span>`:""}${esc(p.who||"—")}</span>`
+       <span class="ln">${chip(p.num, hCol)}${esc(p.who||"—")}</span>`
     : `<span class="lv"></span><span class="ln">—</span>`;
   const sideA = p => p
-    ? `<span class="ln">${esc(p.who||"—")}${p.num?`<span class="num">${esc(p.num)}</span>`:""}</span>
+    ? `<span class="ln">${esc(p.who||"—")}${chip(p.num, aCol)}</span>
        <span class="lv">${esc(p.val||"")}</span>`
     : `<span class="ln">—</span><span class="lv"></span>`;
   const rows = ls.map(l => `<div class="lead">
@@ -1275,8 +1350,11 @@ function scorecardHTML(e, forSticky){
   const sideCol = t => {
     const team = t.team || {};
     const name = team.shortDisplayName || team.displayName || "TBD";
+    const abbr = team.abbreviation || "—";
+    const [accent] = kitColors(team, abbr);
     return `<div class="sc-side">
-      ${logoHTML(team.logo, team.abbreviation||"—")}
+      ${logoHTML(team.logo, abbr)}
+      <span class="sc-accent" style="background:${accent}"></span>
       <div class="sc-name">${esc(name)}</div>
       ${formPips(t.form)}
     </div>`;
@@ -1462,6 +1540,57 @@ setInterval(()=>{
     if(e && mc) mc.textContent = liveClockText(e);
   }
 }, 1000);
+
+/* ---------- site stats: live viewers + total views ---------- */
+(function siteStats(){
+  const BASE = "https://fifa-stats.hasan-d5bd.workers.dev";
+  const box = document.getElementById("siteStats");
+  const liveEl = document.getElementById("liveCount");
+  const totalEl = document.getElementById("totalCount");
+  if(!box) return;
+
+  const show = () => { box.hidden = false; };
+  const setLive  = n => { if(n!=null){ liveEl.textContent = n; show(); } };
+  const setTotal = n => { if(n!=null){ totalEl.textContent = Number(n).toLocaleString(); show(); } };
+
+  // 1) count this visit + get current totals
+  fetch(`${BASE}/hit`, {cache:"no-store"})
+    .then(r => r.ok ? r.json() : null)
+    .then(d => { if(d){ setTotal(d.total); setLive(d.live); } })
+    .catch(()=>{ /* worker unreachable — stats line just stays hidden */ });
+
+  // 2) live presence via WebSocket; the DO broadcasts {live:N} on join/leave
+  let ws = null, retry = null;
+  function connect(){
+    try{
+      ws = new WebSocket(`${BASE.replace(/^https/, "wss")}/ws`);
+    }catch(_){ return; }
+    ws.addEventListener("message", ev => {
+      try{ const d = JSON.parse(ev.data); if(d.live!=null) setLive(d.live); }catch(_){}
+    });
+    ws.addEventListener("close", () => {
+      // reconnect while the tab is visible (e.g. after sleep/network blip)
+      clearTimeout(retry);
+      if(document.visibilityState === "visible") retry = setTimeout(connect, 5000);
+    });
+    ws.addEventListener("error", () => { try{ ws.close(); }catch(_){} });
+  }
+  connect();
+
+  // refresh total periodically (cheap, no increment) and tidy up on exit
+  setInterval(() => {
+    if(document.visibilityState !== "visible") return;
+    fetch(`${BASE}/stats`, {cache:"no-store"})
+      .then(r => r.ok ? r.json() : null)
+      .then(d => { if(d){ setTotal(d.total); setLive(d.live); } })
+      .catch(()=>{});
+  }, 60000);
+
+  document.addEventListener("visibilitychange", () => {
+    if(document.visibilityState === "visible" && (!ws || ws.readyState > 1)) connect();
+  });
+  window.addEventListener("pagehide", () => { try{ ws && ws.close(); }catch(_){} });
+})();
 </script>
 </body>
 </html>
